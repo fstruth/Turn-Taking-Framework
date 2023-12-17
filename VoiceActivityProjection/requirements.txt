@@ -1,0 +1,22 @@
+einops == 0.7.0
+hydra-core == 1.3.2
+numpy
+omegaconf == 2.3.0
+pytorch-lightning == 2.1.2
+wandb == 0.16.1
+pytest == 7.4.3
+praat-parselmouth == 0.4.3
+torch == 2.1.1
+
+# These are dependencies for the othe packages used in this repo
+# https://github.com/ErikEkstedt/vap_turn_taking
+# https://github.com/ErikEkstedt/datasets_turntaking
+datasets == 2.15.0
+
+# Our Dependencies
+# must download and install via
+# 'pip install -r requirements.txt'
+# 'pip install -e .'
+# in the respective repos
+# git+https://github.com/ErikEkstedt/vap_turn_taking.git
+# git+https://github.com/ErikEkstedt/datasets_turntaking.git
