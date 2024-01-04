@@ -203,15 +203,17 @@ class VAP_Model:
         channels = 2
         fs = 44100  # Record at 44100 samples per second
         seconds = 5
-        filename = "output.wav"
+        filename = "VAP.wav"
 
         length_queue = len(signal)
 
+        # return no signal if its shorter than 5 seconds
         if length_queue < 215:
             return None
 
         p = pyaudio.PyAudio()  # Create an interface to PortAudio
 
+        # take only the last 5 seconds (215 chunks) of the audio signal
         frames = signal[-215:]
 
         # Save the recorded data as a WAV file
