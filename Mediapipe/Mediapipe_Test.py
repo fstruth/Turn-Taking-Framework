@@ -8,11 +8,11 @@ import cv2
 def draw_landmarks_on_image(rgb_image, detection_result):
     face_landmarks_list = detection_result.face_landmarks
     annotated_image = np.copy(rgb_image)
- 
+
     # Loop through the detected faces to visualize.
     for idx in range(len(face_landmarks_list)):
         face_landmarks = face_landmarks_list[idx]
- 
+
         # Draw the face landmarks.
         face_landmarks_proto = landmark_pb2.NormalizedLandmarkList()
         face_landmarks_proto.landmark.extend([
@@ -93,3 +93,4 @@ cv2.waitKey(0)
 # closing all open windows
 cv2.destroyAllWindows()
 """
+print("done")

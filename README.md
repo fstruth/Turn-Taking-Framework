@@ -23,6 +23,8 @@ Link to Paper
 
 How to use it with Furhat
 
+TBD
+
 ## Installation
 
 To use our framework you should install the VAP model first. Therefore we wrote a new installation guide and what to do after that.
@@ -37,6 +39,10 @@ To use our framework you should install the VAP model first. Therefore we wrote 
 * **Framework**
   * cd to root directory and run:
     * `pip install -r requirements.txt`
+
+## Known Issues
+
+
 
 ## Citation
 

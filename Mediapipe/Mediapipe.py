@@ -97,7 +97,6 @@ class Mediapipe:
 
             # STEP 5: Process the detection result. In this case, visualize it.
             annotated_image = self.draw_landmarks_on_image(mp_image.numpy_view(), detection_result)
-            cv2.imshow(cv2.cvtColor(annotated_image, cv2.COLOR_RGB2BGR))
 
 
 event = Event()
