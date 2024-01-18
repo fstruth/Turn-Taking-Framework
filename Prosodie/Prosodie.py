@@ -106,11 +106,11 @@ class Prosodie:
         LR = LinearRegression().fit(x_final, y_final)
         coef = LR.coef_
 
-        if coef > 0:
+        if coef[0] > 0.1:
             pitch = 1
-        elif coef < 0:
+        elif coef[0] < 0.1:
             pitch = 1
-        elif coef.isclose(0):
+        elif coef[0].isclose(0):
             pitch = 0
 
         return pitch
@@ -169,6 +169,7 @@ class Prosodie:
         LR_slope_1500 = LinearRegression().fit(x_final, y_slope_1500_final)
         coef_slope_1500 = LR_slope_1500.coef_
         intercept_slope_1500 = LR_slope_1500.intercept_
+        slope = 0
 
         if coef_slope_500 < 0 and coef_slope_1500 != 0:
             slope = 1
@@ -205,7 +206,7 @@ class Prosodie:
             slope = self.slope(filename, y)
 
             # 0: Holding 1: Shift
-            if sum(loudness, pitch, slope) >= 2:
+            if (loudness + pitch + slope) >= 2:
                 shift = 1
             else:
                 shift = 0

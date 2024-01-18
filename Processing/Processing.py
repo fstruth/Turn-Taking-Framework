@@ -7,7 +7,6 @@ class Processing:
     def __init__(self, event):
         self._running = True
         self.event = event
-        self.diff_list = []
 
     def terminate(self):
         self.event.set()
@@ -34,21 +33,25 @@ class Processing:
                 return 0
 
         # Default-Wert, falls nicht genügend Werte vorhanden sind
-        return None
+        return 0
 
     def run(self, ListOfQueues, OutputQueue):
         logger.debug("Process enters loop")
+        diff_list = []
         while not self.event.is_set():
-            VAP_out = ListOfQueues[0].get()
+            VAP_out = ListOfQueues[0].get().tolist()
+
             # compute the difference - if diff > 0: hold else: shift
-            diff = VAP_out[1] - VAP_out[0]
-            self.diff_list = self.diff_list.append(diff)
+            diff = VAP_out[-1][1] - VAP_out[-1][0]
+            diff_list.append(diff)
             # Analyse durchführen
-            VAP = self.analyse_trend(self.diff_list)
+            VAP = self.analyse_trend(diff_list)
+            logger.debug("VAP: ", VAP)
 
             Prosodie_out = ListOfQueues[1].get()
+            logger.debug("Prosodie: ", Prosodie_out)
 
-            if sum(VAP, Prosodie_out) == 2:
+            if (VAP + Prosodie_out) == 2:
                 ergebnis = 1
             else:
                 ergebnis = 0

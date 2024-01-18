@@ -13,14 +13,14 @@ class Sending:
     def terminate(self):
         self.event.set()
 
-    def get_zmq_tcp_connection(ip_outsocket):
+    def get_zmq_tcp_connection(self, ip_outsocket):
         # Output results using a PUB socket
         context = zmq.Context()
         outsocket = context.socket(zmq.PUB)
         outsocket.bind("tcp://" + ip_outsocket + ":" + '9999')
         return outsocket
 
-    def run(self, InputQueue):
+    def run(self, InputQueue, OutputQueue):
         logger.debug("Process enters loop")
 
         outsocket = self.get_zmq_tcp_connection("127.0.0.1")
@@ -42,11 +42,11 @@ def StopSending():
     logger.debug("Process terminated")
 
 
-def StartSending(InputQueue=None):
+def StartSending(InputQueue=None, OutputQueue=None):
     global t, event, c
     if t is None:
         event = Event()
         c = Sending(event)
-        t = Process(target=c.run, args=(InputQueue))
+        t = Process(target=c.run, args=(InputQueue, OutputQueue))
         t.start()
         logger.debug("Process started")

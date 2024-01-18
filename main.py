@@ -2,8 +2,8 @@ import multiprocessing
 from Audio_Video_Read.AUDIO_READ import StartAUDIO_READ, StopAUDIO_READ
 from Broker.AudioChunkBroker import StartAudioChunkBroker, StopAudioChunkBroker
 from VoiceActivityProjection.VAP_Model import StartVAP_Model, StopVAP_Model
-from Audio_Video_Read.VIDEO_READ import StartVIDEO_READ, StopVIDEO_READ
-from Mediapipe import StartMediapipe, StopMediapipe
+#from Audio_Video_Read.VIDEO_READ import StartVIDEO_READ, StopVIDEO_READ
+#from Mediapipe import StartMediapipe, StopMediapipe
 from Processing.Processing import StartProcessing, StopProcessing
 from Prosodie.Prosodie import StartProsodie, StopProsodie
 from Processing.SendToSkill import StartSending, StopSending
@@ -14,8 +14,8 @@ logger.add("main.log")
 
 
 # define the name of the microphone
-Audio_Device = "Built-in Microphone"
-Video_Device = ()
+Audio_Device = "Mikrofonarray (2- Realtek(R) Audio)"
+Video_Device = ""
 
 if __name__ == '__main__':
     print("Available CPU cores: ", multiprocessing.cpu_count())
@@ -26,8 +26,8 @@ if __name__ == '__main__':
         AudioBrokerToVAP = manager.Queue()
         AudioBrokerToProsodie = manager.Queue()
         ListAudioBrokerQueues = [AudioBrokerToVAP, AudioBrokerToProsodie]
-        VideoReadOutput = manager.Queue()
-        MediapipeOutput = manager.Queue()
+        #VideoReadOutput = manager.Queue()
+        #MediapipeOutput = manager.Queue()
         VAPOutput = manager.Queue()
         ProsodieOutput = manager.Queue()
         ListProcessingQueues = [VAPOutput, ProsodieOutput]
@@ -48,14 +48,14 @@ if __name__ == '__main__':
         # start Prosodie
         logger.debug("Start Prosodie")
         StartProsodie(InputQueue=AudioBrokerToProsodie, OutputQueue=ProsodieOutput)
-
+        
         # start Processing
         logger.debug("Start Processing")
         StartProcessing(ListProcessingQueues, ProcessingOutput)
-
+        
         # start Send to Skill
         logger.debug("Start sending to skill")
-        StartSending(ProcessingOutput)
+        StartSending(InputQueue=ProcessingOutput)
 
         """
         # start recording
@@ -67,7 +67,7 @@ if __name__ == '__main__':
         StartMediapipe(InputQueue=VideoReadOutput, OutputQueue=MediapipeOutput)
         """
 
-        time.sleep(30)
+        time.sleep(120)
 
         logger.debug("Stop sending to Skill")
         StopSending()
