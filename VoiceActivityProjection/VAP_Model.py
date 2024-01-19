@@ -6,6 +6,7 @@ from os.path import basename
 import matplotlib.pyplot as plt
 import torch
 from loguru import logger
+import time
 
 from vap.model import VapGPT, VapConfig, load_older_state_dict
 from vap.audio import load_waveform
@@ -295,8 +296,9 @@ class VAP_Model:
             ###########################################################
             # Save Output
             ###########################################################
-            OutputQueue.put(out["p_future"][-1])
+            OutputQueue.put(out["p_future"][0][-1])
             # logger.debug("Output: " + str(out["p_future"][0][-1]))
+            time.sleep(0.4)
 
             '''
             ###########################################################

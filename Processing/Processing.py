@@ -21,8 +21,8 @@ class Processing:
             fallen = all(x > y for x, y in zip(letzten_vier_werte, letzten_vier_werte[1:]))
 
             # Überprüfen, ob die letzten Werte größer oder kleiner 0 sind
-            groesser_null = all(x > 0 for x in letzten_vier_werte)
-            kleiner_null = all(x < 0 for x in letzten_vier_werte)
+            groesser_null = True if letzten_vier_werte[-1] > 0 else False
+            kleiner_null = True if letzten_vier_werte[-1] < 0 else False
 
             # Entsprechenden Wert zurückgeben (0: Holding; 1: Shifting)
             if groesser_null and steigen:
@@ -40,22 +40,22 @@ class Processing:
         diff_list = []
         while not self.event.is_set():
             VAP_out = ListOfQueues[0].get().tolist()
-
+            #logger.debug("VAP: {}", VAP_out)
             # compute the difference - if diff > 0: hold else: shift
-            diff = VAP_out[-1][1] - VAP_out[-1][0]
+            diff = VAP_out[1] - VAP_out[0]
             diff_list.append(diff)
             # Analyse durchführen
             VAP = self.analyse_trend(diff_list)
-            logger.debug("VAP: ", VAP)
+            #logger.debug("VAP: {}", VAP)
 
             Prosodie_out = ListOfQueues[1].get()
-            logger.debug("Prosodie: ", Prosodie_out)
+            #logger.debug("Prosodie: {}", Prosodie_out)
 
             if (VAP + Prosodie_out) == 2:
                 ergebnis = 1
             else:
                 ergebnis = 0
-
+            
             OutputQueue.put(ergebnis)
 
 

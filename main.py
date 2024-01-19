@@ -94,4 +94,4 @@ if __name__ == '__main__':
         StopVIDEO_READ()
         """
 
-        time.sleep(5)
+        time.sleep(10)
