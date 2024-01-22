@@ -14,7 +14,7 @@ class VIDEO_READ:
 
     def run(self, OutputQueue, videodevice):
         # define a video capture object
-        vid = cv2.VideoCapture(1)
+        vid = cv2.VideoCapture(0)
         vid.set(cv2.CAP_PROP_FPS, 2)
 
         while not self.event.is_set():

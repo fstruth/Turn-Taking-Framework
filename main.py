@@ -2,8 +2,8 @@ import multiprocessing
 from Audio_Video_Read.AUDIO_READ import StartAUDIO_READ, StopAUDIO_READ
 from Broker.AudioChunkBroker import StartAudioChunkBroker, StopAudioChunkBroker
 from VoiceActivityProjection.VAP_Model import StartVAP_Model, StopVAP_Model
-#from Audio_Video_Read.VIDEO_READ import StartVIDEO_READ, StopVIDEO_READ
-#from Mediapipe import StartMediapipe, StopMediapipe
+from Audio_Video_Read.VIDEO_READ import StartVIDEO_READ, StopVIDEO_READ
+from Headpose.HeadposeDetection import StartHeadposeDetection, StopHeadposeDetection
 from Processing.Processing import StartProcessing, StopProcessing
 from Prosodie.Prosodie import StartProsodie, StopProsodie
 from Processing.SendToSkill import StartSending, StopSending
@@ -26,11 +26,11 @@ if __name__ == '__main__':
         AudioBrokerToVAP = manager.Queue()
         AudioBrokerToProsodie = manager.Queue()
         ListAudioBrokerQueues = [AudioBrokerToVAP, AudioBrokerToProsodie]
-        #VideoReadOutput = manager.Queue()
-        #MediapipeOutput = manager.Queue()
+        VideoReadOutput = manager.Queue()
+        HeadposeOutput = manager.Queue()
         VAPOutput = manager.Queue()
         ProsodieOutput = manager.Queue()
-        ListProcessingQueues = [VAPOutput, ProsodieOutput]
+        ListProcessingQueues = [VAPOutput, ProsodieOutput, HeadposeOutput]
         ProcessingOutput = manager.Queue()
 
         # start recording
@@ -49,6 +49,14 @@ if __name__ == '__main__':
         logger.debug("Start Prosodie")
         StartProsodie(InputQueue=AudioBrokerToProsodie, OutputQueue=ProsodieOutput)
         
+        # start recording
+        logger.debug("Start Video_READ")
+        StartVIDEO_READ(videodevice="", OutputQueue=VideoReadOutput)
+
+        # start processing of the video
+        logger.debug("Start HeadposeDetection")
+        StartHeadposeDetection(InputQueue=VideoReadOutput, OutputQueue=HeadposeOutput)
+
         # start Processing
         logger.debug("Start Processing")
         StartProcessing(ListProcessingQueues, ProcessingOutput)
@@ -57,17 +65,7 @@ if __name__ == '__main__':
         logger.debug("Start sending to skill")
         StartSending(InputQueue=ProcessingOutput)
 
-        """
-        # start recording
-        logger.debug("Start Video_READ")
-        StartVIDEO_READ(videodevice="", OutputQueue=VideoReadOutput)
-
-        # start processing of the video
-        logger.debug("Start Mediapipe")
-        StartMediapipe(InputQueue=VideoReadOutput, OutputQueue=MediapipeOutput)
-        """
-
-        time.sleep(120)
+        time.sleep(30)
 
         logger.debug("Stop sending to Skill")
         StopSending()
@@ -86,12 +84,11 @@ if __name__ == '__main__':
 
         logger.debug("Stop Processing")
         StopProcessing()
-        """
-        logger.debug("Stop Mediapipe")
-        StopMediapipe()
+
+        logger.debug("Stop HeadposeDetection")
+        StopHeadposeDetection()
 
         logger.debug("Stop VIDEO_READ")
         StopVIDEO_READ()
-        """
-
+        
         time.sleep(10)

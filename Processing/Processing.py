@@ -51,12 +51,15 @@ class Processing:
             Prosodie_out = ListOfQueues[1].get()
             #logger.debug("Prosodie: {}", Prosodie_out)
 
+            Headpose_out = ListOfQueues[2].get()
+            #logger.debug("Headpose: {}", Headpose_out)
+
             if (VAP + Prosodie_out) == 2:
                 ergebnis = 1
             else:
                 ergebnis = 0
             
-            OutputQueue.put(ergebnis)
+            OutputQueue.put(VAP)
 
 
 event = Event()
