@@ -7,6 +7,7 @@ from sklearn.linear_model import LinearRegression
 import opensmile
 import pyaudio
 import wave
+import time
 
 
 class Prosodie:
@@ -100,8 +101,8 @@ class Prosodie:
         time = df_f0["end"].dt.total_seconds()
         f0 = df_f0['F0']
 
-        x_final = time.tail(20).array.reshape(-1, 1)
-        y_final = f0.tail(20)  # Die letzen 20 Werte von F0
+        x_final = time.tail(10).array.reshape(-1, 1)
+        y_final = f0.tail(10)  # Die letzen 10 Werte von F0
 
         LR = LinearRegression().fit(x_final, y_final)
         coef = LR.coef_
@@ -152,11 +153,11 @@ class Prosodie:
         df_slope_1500 = pd.DataFrame(dataTable_slope_1500)
 
         time = df_slope_500["end"].dt.total_seconds()
-        x_final = time.tail(20).array.reshape(-1, 1)
+        x_final = time.tail(10).array.reshape(-1, 1)
 
         slope_500 = df_slope_500['slope 0-500']
 
-        y_slope_500_final = slope_500.tail(20)  # Die letzen 20 Werte vom slope 0-500Hz
+        y_slope_500_final = slope_500.tail(10)  # Die letzen 10 Werte vom slope 0-500Hz
 
         LR_slope_500 = LinearRegression().fit(x_final, y_slope_500_final)
         coef_slope_500 = LR_slope_500.coef_
@@ -164,7 +165,7 @@ class Prosodie:
 
         slope_1500 = df_slope_1500['slope 500-1500']
 
-        y_slope_1500_final = slope_1500.tail(20)  # Die letzen 20 Werte vom slope 0-500Hz
+        y_slope_1500_final = slope_1500.tail(10)  # Die letzen 20 Werte vom slope 0-500Hz
 
         LR_slope_1500 = LinearRegression().fit(x_final, y_slope_1500_final)
         coef_slope_1500 = LR_slope_1500.coef_
@@ -202,11 +203,16 @@ class Prosodie:
             y = smile.process_file(audio_file)
 
             loudness = self.loudness(filename, y)
+            # logger.debug("loudness: {}", loudness)
             pitch = self.f0(filename, y)
+            # logger.debug("pitch: {}", pitch)
             slope = self.slope(filename, y)
+            # logger.debug("slope: {}", slope)
+
+            time.sleep(0.1)
 
             # 0: Holding 1: Shift
-            if (loudness + pitch + slope) >= 2:
+            if (loudness + pitch + slope) == 3:
                 shift = 1
             else:
                 shift = 0

@@ -2,7 +2,7 @@
 # Author Jan-Niklas Oberließ
 # Author Michael Schiffmann
 
-
+import time
 import cv2
 import mediapipe as mp
 from get_math_functions import *
@@ -33,10 +33,10 @@ def head_movement(x,y):
     elif y > 12:
         text = "Looking Right"
         # averted
-    elif x > -176 & x < -150:
+    elif -160 < x < -130:
         text = "Looking Down"
         #averted
-    elif x > 150:
+    elif 120 < x < 160:
         text = "Looking Up"
         #averted
     else:
@@ -162,6 +162,7 @@ with mp_holistic.Holistic(
         draw_lm(image)
         # showing live image
         cv2.imshow('MediaPipe Holistic', image)
+        # time.sleep(0.5)
         if cv2.waitKey(5) & 0xFF == 27:
             print("Escape pressed...")
             print("Programm will be terminated...")

@@ -28,19 +28,25 @@ class HeadposeDetection:
 
         if y < -0.5:
             text = "Looking Left"
+            turn = 0
 
         elif y > 12:
             text = "Looking Right"
+            turn = 0
 
-        elif x > -176 & x < -150:
+        elif -160 < x < -130:
             text = "Looking Down"
+            turn = 0
 
-        elif x > 150:
+        elif 120 < x < 160:
             text = "Looking Up"
+            turn = 0
 
         else:
             text = "Head Facing"
-        return text
+            turn = 1
+
+        return turn, text
 
     def run(self, OutputQueue, InputQueue):
         # Intializing the mediapipe specs
@@ -64,6 +70,8 @@ class HeadposeDetection:
 
                 # get image resolution
                 height, width, _ = image.shape
+
+                turn = 1
 
                 try:
                     # To improve performance, optionally mark the image as not writeable to
@@ -96,9 +104,9 @@ class HeadposeDetection:
                     cv2.line(image, p1, p2, (255, 0, 0), 3)
 
                     ## See where the user's head turning
-                    turning = self.head_movement(x, y)
-                    logger.debug("X: {}; Y: {}", x, y)
-                    logger.debug("Direction: {}", turning)
+                    turn, direction = self.head_movement(x, y)
+                    # logger.debug("X: {}; Y: {}", x, y)
+                    logger.debug("Direction: {}", direction)
                     
                 #################################################################################################################
                 ## End of main loop
@@ -111,7 +119,7 @@ class HeadposeDetection:
                     pass
                 #######################################################################################################
 
-                OutputQueue.put(turning)
+                OutputQueue.put(turn)
 
 event = Event()
 c = HeadposeDetection(event)

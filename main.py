@@ -12,7 +12,6 @@ from loguru import logger
 
 logger.add("main.log")
 
-
 # define the name of the microphone
 Audio_Device = "Mikrofonarray (2- Realtek(R) Audio)"
 Video_Device = ""
@@ -65,7 +64,7 @@ if __name__ == '__main__':
         logger.debug("Start sending to skill")
         StartSending(InputQueue=ProcessingOutput)
 
-        time.sleep(30)
+        time.sleep(200)
 
         logger.debug("Stop sending to Skill")
         StopSending()

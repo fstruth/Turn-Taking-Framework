@@ -34,10 +34,23 @@ class Processing:
 
         # Default-Wert, falls nicht genügend Werte vorhanden sind
         return 0
+    
+    def analyse_headpose(self, headpose_list):
+        # Prüfe die letzten 10 Werte in der Liste
+        letzten_10_werte = headpose_list[-10:]
+        
+        # Überprüfe, ob sich der Wert von 0 auf 1 geändert hat
+        if 0 in letzten_10_werte and 1 in letzten_10_werte and letzten_10_werte.index(0) > letzten_10_werte.index(1):
+            return 2
+        elif headpose_list[-1] == 1:
+            return 1
+        else:
+            return 0
 
     def run(self, ListOfQueues, OutputQueue):
         logger.debug("Process enters loop")
         diff_list = []
+        headpose_list = []
         while not self.event.is_set():
             VAP_out = ListOfQueues[0].get().tolist()
             #logger.debug("VAP: {}", VAP_out)
@@ -49,17 +62,19 @@ class Processing:
             #logger.debug("VAP: {}", VAP)
 
             Prosodie_out = ListOfQueues[1].get()
-            #logger.debug("Prosodie: {}", Prosodie_out)
+            # logger.debug("Prosodie: {}", Prosodie_out)
 
             Headpose_out = ListOfQueues[2].get()
-            #logger.debug("Headpose: {}", Headpose_out)
+            headpose_list.append(Headpose_out)
+            Headpose = self.analyse_headpose(headpose_list)
+            logger.debug("Headpose: {}", Headpose)
 
-            if (VAP + Prosodie_out) == 2:
+            if (VAP + Prosodie_out + Headpose) >= 3:
                 ergebnis = 1
             else:
                 ergebnis = 0
             
-            OutputQueue.put(VAP)
+            OutputQueue.put(Headpose)
 
 
 event = Event()
