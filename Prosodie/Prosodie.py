@@ -31,13 +31,13 @@ class Prosodie:
         length_queue = len(signal)
 
         # return no signal if its shorter than 5 seconds
-        if length_queue < 215:
+        if length_queue < 129:
             return None
 
         p = pyaudio.PyAudio()  # Create an interface to PortAudio
 
         # take only the last 5 seconds (215 chunks) of the audio signal
-        frames = signal[-215:]
+        frames = signal[-129:]
 
         # Save the recorded data as a WAV file
         wf = wave.open(filename, 'wb')
@@ -68,7 +68,8 @@ class Prosodie:
 
         dfLoudness = pd.DataFrame(dataTableLoudness)
 
-        finalLoudness = dfLoudness.tail(25)
+        finalLoudness = dfLoudness.tail(10)
+        # loudness = dfLoudness.tail(200)
 
         finalLoudness_mean = finalLoudness['loudness'].mean()
         loudness_mean = dfLoudness['loudness'].mean()
@@ -106,12 +107,11 @@ class Prosodie:
 
         LR = LinearRegression().fit(x_final, y_final)
         coef = LR.coef_
+        logger.debug("coef: {}", coef[0])
 
-        if coef[0] > 0.1:
+        if coef[0] > 0.1 or coef[0] < -0.1:
             pitch = 1
-        elif coef[0] < 0.1:
-            pitch = 1
-        elif coef[0].isclose(0):
+        else:
             pitch = 0
 
         return pitch
@@ -180,7 +180,7 @@ class Prosodie:
         return slope
 
     def run(self, InputQueue, OutputQueue):
-        logger.debug("Process enters loop")
+        # logger.debug("Process enters loop")
 
         smile = opensmile.Smile(
             feature_set=opensmile.FeatureSet.eGeMAPSv02,
@@ -203,21 +203,22 @@ class Prosodie:
             y = smile.process_file(audio_file)
 
             loudness = self.loudness(filename, y)
-            # logger.debug("loudness: {}", loudness)
+            logger.debug("loudness: {}", loudness)
             pitch = self.f0(filename, y)
-            # logger.debug("pitch: {}", pitch)
+            logger.debug("pitch: {}", pitch)
             slope = self.slope(filename, y)
-            # logger.debug("slope: {}", slope)
-
-            time.sleep(0.1)
+            logger.debug("slope: {}", slope)
 
             # 0: Holding 1: Shift
-            if (loudness + pitch + slope) == 3:
+            if (loudness + pitch + slope) >= 3:
                 shift = 1
             else:
                 shift = 0
-
+            
+            logger.debug("Prosodie: {}", shift)
             OutputQueue.put(shift)
+
+            time.sleep(0.7)
 
 
 event = Event()
