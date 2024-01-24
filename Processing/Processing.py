@@ -23,16 +23,30 @@ class Processing:
         return 0
     
     def analyse_headpose(self, headpose_list):
-        # Prüfe die letzten 5 Werte in der Liste
-        letzten_5_werte = headpose_list[-5:]
         
-        # Überprüfe, ob sich der Wert von 0 auf 1 geändert hat
-        if 0 in letzten_5_werte and 1 in letzten_5_werte and letzten_5_werte.index(0) > letzten_5_werte.index(1):
-            return 2
-        elif headpose_list[-1] == 1:
-            return 1
-        else:
-            return 0
+        def finde_index_der_nullen(lst):
+            if 0 in lst:
+                index_der_letzten_null = len(lst) - 1 - lst[::-1].index(0)
+                index_erste_null = lst.index(0) if 0 in lst else None
+                return index_erste_null, index_der_letzten_null
+            else:
+                return None, None
+
+        if len(headpose_list) >= 5:
+            # Prüfe die letzten 5 Werte in der Liste
+            letzten_5_werte = headpose_list[-5:]
+
+            index_erste_null, index_der_letzten_null = finde_index_der_nullen(letzten_5_werte)
+            
+            # Überprüfe, ob sich der Wert von 0 auf 1 geändert hat
+            if index_der_letzten_null is not None and all(x == 1 for x in letzten_5_werte[index_der_letzten_null+1:]) and index_erste_null is not None and all(x == 1 for x in letzten_5_werte[index_erste_null+1:]):
+                time.sleep(0.1)
+                return 2
+            elif headpose_list[-1] == 1 and headpose_list[-2] == 1:
+                return 1
+            else:
+                return 0
+        return 0
 
     def run(self, ListOfQueues, OutputQueue):
         logger.debug("Process enters loop")
@@ -47,19 +61,19 @@ class Processing:
             # logger.debug("VAP: {}", VAP)
 
             Prosodie_out = ListOfQueues[1].get()
-            logger.debug("Prosodie: {}", Prosodie_out)
+            # logger.debug("Prosodie_out: {}", Prosodie_out)
 
             Headpose_out = ListOfQueues[2].get()
             headpose_list.append(Headpose_out)
             Headpose = self.analyse_headpose(headpose_list)
-            # logger.debug("Headpose: {}", Headpose)
+            logger.debug("Headpose: {}", Headpose)
 
             if (VAP + Prosodie_out + Headpose) >= 3:
                 ergebnis = 1
             else:
                 ergebnis = 0
             
-            OutputQueue.put(Prosodie_out)
+            OutputQueue.put(ergebnis)
             time.sleep(0.1)
 
 

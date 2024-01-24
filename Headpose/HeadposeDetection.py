@@ -111,7 +111,7 @@ class HeadposeDetection:
                     ## See where the user's head turning
                     turn, direction = self.head_movement(x, y)
                     # logger.debug("X: {}; Y: {}", x, y)
-                    # logger.debug("Direction: {}", direction)
+                    logger.debug("Direction: {}", direction)
                     
                 #################################################################################################################
                 ## End of main loop
@@ -129,7 +129,7 @@ class HeadposeDetection:
                     pass
 
                 OutputQueue.put(turn)
-                time.sleep(0.2)
+                time.sleep(0.4)
 
         vid.release()
 

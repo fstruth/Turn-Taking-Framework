@@ -107,7 +107,7 @@ class Prosodie:
 
         LR = LinearRegression().fit(x_final, y_final)
         coef = LR.coef_
-        logger.debug("coef: {}", coef[0])
+        # logger.debug("coef: {}", coef[0])
 
         if coef[0] > 0.1 or coef[0] < -0.1:
             pitch = 1
@@ -203,11 +203,11 @@ class Prosodie:
             y = smile.process_file(audio_file)
 
             loudness = self.loudness(filename, y)
-            logger.debug("loudness: {}", loudness)
+            # logger.debug("loudness: {}", loudness)
             pitch = self.f0(filename, y)
-            logger.debug("pitch: {}", pitch)
+            # logger.debug("pitch: {}", pitch)
             slope = self.slope(filename, y)
-            logger.debug("slope: {}", slope)
+            # logger.debug("slope: {}", slope)
 
             # 0: Holding 1: Shift
             if (loudness + pitch + slope) >= 3:
@@ -215,7 +215,7 @@ class Prosodie:
             else:
                 shift = 0
             
-            logger.debug("Prosodie: {}", shift)
+            # logger.debug("Prosodie: {}", shift)
             OutputQueue.put(shift)
 
             time.sleep(0.7)
