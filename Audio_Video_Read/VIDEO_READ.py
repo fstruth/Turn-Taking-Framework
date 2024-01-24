@@ -1,7 +1,7 @@
 import cv2
 from multiprocessing import Process, Event
 from loguru import logger
-
+import time
 
 class VIDEO_READ:
 
@@ -22,6 +22,7 @@ class VIDEO_READ:
             ret, frame = vid.read()
 
             OutputQueue.put(frame)
+            time.sleep(0.2)
 
         # After the loop release the cap object
         vid.release()

@@ -296,9 +296,11 @@ class VAP_Model:
             ###########################################################
             # Save Output
             ###########################################################
-            OutputQueue.put(out["p_future"][0][-1])
-            # logger.debug("Output: " + str(out["p_future"][0][-1]))
-            time.sleep(0.4)
+            # logger.debug("Output: " + str(out["p_now"]))
+            # logger.debug("Output: " + str(out["p_now"][0][-1]))
+            OutputQueue.put(out["p_now"][0][-1])
+            
+            time.sleep(0.6)
 
             '''
             ###########################################################

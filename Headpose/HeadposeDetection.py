@@ -12,6 +12,7 @@ import mediapipe as mp
 from mediapipe.tasks import python
 from Headpose.get_math_functions import *
 from Headpose.get_mp_landmarks import *
+import time
 
 
 class HeadposeDetection:
@@ -54,6 +55,8 @@ class HeadposeDetection:
         mp_drawing_styles = mp.solutions.drawing_styles
         mp_holistic = solutions.holistic
 
+        vid = cv2.VideoCapture(0)
+
         # Posture definitions
         points_3d_FACE = [[0, -1.126865, 7.475604],
                     [-4.445859, 2.663991, 3.173422],
@@ -61,17 +64,19 @@ class HeadposeDetection:
                     [-2.456206, -4.342621, 4.283884],
                     [2.456206, -4.342621, 4.283884],
                     [0, -9.403378, 4.264492]]
+        turn = 1
         
         while not self.event.is_set():
             with mp_holistic.Holistic(
                     min_detection_confidence=0.5,
                     min_tracking_confidence=0.5) as holistic:
-                image = InputQueue.get()
+                # image = InputQueue.get()
+                ret, image = vid.read()
 
                 # get image resolution
                 height, width, _ = image.shape
 
-                turn = 1
+                
 
                 try:
                     # To improve performance, optionally mark the image as not writeable to
@@ -106,7 +111,7 @@ class HeadposeDetection:
                     ## See where the user's head turning
                     turn, direction = self.head_movement(x, y)
                     # logger.debug("X: {}; Y: {}", x, y)
-                    logger.debug("Direction: {}", direction)
+                    # logger.debug("Direction: {}", direction)
                     
                 #################################################################################################################
                 ## End of main loop
@@ -118,8 +123,15 @@ class HeadposeDetection:
                     print("Error in Entire_Body: " + str(e))
                     pass
                 #######################################################################################################
+                if type(turn) == "Nonetype":
+                    turn = 1
+                else:
+                    pass
 
                 OutputQueue.put(turn)
+                time.sleep(0.2)
+
+        vid.release()
 
 event = Event()
 c = HeadposeDetection(event)

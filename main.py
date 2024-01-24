@@ -14,7 +14,6 @@ logger.add("main.log")
 
 # define the name of the microphone
 Audio_Device = "Mikrofonarray (2- Realtek(R) Audio)"
-Video_Device = ""
 
 if __name__ == '__main__':
     print("Available CPU cores: ", multiprocessing.cpu_count())
@@ -25,7 +24,7 @@ if __name__ == '__main__':
         AudioBrokerToVAP = manager.Queue()
         AudioBrokerToProsodie = manager.Queue()
         ListAudioBrokerQueues = [AudioBrokerToVAP, AudioBrokerToProsodie]
-        VideoReadOutput = manager.Queue()
+        # VideoReadOutput = manager.Queue()
         HeadposeOutput = manager.Queue()
         VAPOutput = manager.Queue()
         ProsodieOutput = manager.Queue()
@@ -49,12 +48,12 @@ if __name__ == '__main__':
         StartProsodie(InputQueue=AudioBrokerToProsodie, OutputQueue=ProsodieOutput)
         
         # start recording
-        logger.debug("Start Video_READ")
-        StartVIDEO_READ(videodevice="", OutputQueue=VideoReadOutput)
+        # logger.debug("Start Video_READ")
+        # StartVIDEO_READ(videodevice="", OutputQueue=VideoReadOutput)
 
         # start processing of the video
         logger.debug("Start HeadposeDetection")
-        StartHeadposeDetection(InputQueue=VideoReadOutput, OutputQueue=HeadposeOutput)
+        StartHeadposeDetection(InputQueue=None, OutputQueue=HeadposeOutput)
 
         # start Processing
         logger.debug("Start Processing")
@@ -87,7 +86,7 @@ if __name__ == '__main__':
         logger.debug("Stop HeadposeDetection")
         StopHeadposeDetection()
 
-        logger.debug("Stop VIDEO_READ")
-        StopVIDEO_READ()
+        # logger.debug("Stop VIDEO_READ")
+        # StopVIDEO_READ()
         
         time.sleep(10)
