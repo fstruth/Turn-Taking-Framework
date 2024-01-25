@@ -35,11 +35,11 @@ class HeadposeDetection:
             text = "Looking Right"
             turn = 0
 
-        elif -160 < x < -130:
+        elif -150 < x < -130:
             text = "Looking Down"
             turn = 0
 
-        elif 120 < x < 160:
+        elif 120 < x < 160 or -180 < x < -155:
             text = "Looking Up"
             turn = 0
 
@@ -111,7 +111,7 @@ class HeadposeDetection:
                     ## See where the user's head turning
                     turn, direction = self.head_movement(x, y)
                     # logger.debug("X: {}; Y: {}", x, y)
-                    logger.debug("Direction: {}", direction)
+                    # logger.debug("Direction: {}", direction)
                     
                 #################################################################################################################
                 ## End of main loop

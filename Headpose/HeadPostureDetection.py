@@ -33,10 +33,10 @@ def head_movement(x,y):
     elif y > 12:
         text = "Looking Right"
         # averted
-    elif -160 < x < -130:
+    elif -150 < x < -130:
         text = "Looking Down"
         #averted
-    elif 120 < x < 160:
+    elif 120 < x < 160 or -180 < x < -155:
         text = "Looking Up"
         #averted
     else:
@@ -61,7 +61,7 @@ points_3d_FACE = [[0, -1.126865, 7.475604],
               [2.456206, -4.342621, 4.283884],
               [0, -9.403378, 4.264492]]
 # Get Camera Connection
-cap = cv2.VideoCapture(0) #1 for external webcam / 0 for internal cam
+cap = cv2.VideoCapture(1) #1 for external webcam / 0 for internal cam
 
 with mp_holistic.Holistic(
         min_detection_confidence=0.5,
@@ -162,7 +162,7 @@ with mp_holistic.Holistic(
         draw_lm(image)
         # showing live image
         cv2.imshow('MediaPipe Holistic', image)
-        # time.sleep(0.5)
+        time.sleep(1)
         if cv2.waitKey(5) & 0xFF == 27:
             print("Escape pressed...")
             print("Programm will be terminated...")

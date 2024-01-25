@@ -13,7 +13,7 @@ from loguru import logger
 logger.add("main.log")
 
 # define the name of the microphone
-Audio_Device = "Mikrofonarray (2- Realtek(R) Audio)"
+Audio_Device = "Mikrofon (Jabra EVOLVE 20 SE)"
 
 if __name__ == '__main__':
     print("Available CPU cores: ", multiprocessing.cpu_count())
@@ -63,7 +63,7 @@ if __name__ == '__main__':
         logger.debug("Start sending to skill")
         StartSending(InputQueue=ProcessingOutput)
 
-        time.sleep(200)
+        time.sleep(500)
 
         logger.debug("Stop sending to Skill")
         StopSending()

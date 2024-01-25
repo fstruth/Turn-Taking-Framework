@@ -69,10 +69,10 @@ class Prosodie:
         dfLoudness = pd.DataFrame(dataTableLoudness)
 
         finalLoudness = dfLoudness.tail(10)
-        # loudness = dfLoudness.tail(200)
+        loudness = dfLoudness.tail(100)
 
         finalLoudness_mean = finalLoudness['loudness'].mean()
-        loudness_mean = dfLoudness['loudness'].mean()
+        loudness_mean = loudness['loudness'].mean()
 
         if finalLoudness_mean <= loudness_mean:
             loudness = 1
@@ -210,7 +210,7 @@ class Prosodie:
             # logger.debug("slope: {}", slope)
 
             # 0: Holding 1: Shift
-            if (loudness + pitch + slope) >= 3:
+            if (loudness + pitch + slope) >= 2:
                 shift = 1
             else:
                 shift = 0

@@ -66,9 +66,9 @@ class Processing:
             Headpose_out = ListOfQueues[2].get()
             headpose_list.append(Headpose_out)
             Headpose = self.analyse_headpose(headpose_list)
-            logger.debug("Headpose: {}", Headpose)
+            # logger.debug("Headpose: {}", Headpose)
 
-            if (VAP + Prosodie_out + Headpose) >= 3:
+            if (VAP + Headpose) >= 2:
                 ergebnis = 1
             else:
                 ergebnis = 0
