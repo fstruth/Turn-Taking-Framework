@@ -5,7 +5,7 @@ import torch
 import torchaudio
 
 
-from vap.model import VapGPT, VapConfig, load_older_state_dict
+from vap.model import VapGPT, VapConfig
 from vap.audio import load_waveform
 from vap.utils import (
     batch_to_device,

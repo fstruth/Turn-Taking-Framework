@@ -6,6 +6,7 @@ from os.path import basename
 import matplotlib.pyplot as plt
 import torch
 from loguru import logger
+import time
 
 from vap.model import VapGPT, VapConfig, load_older_state_dict
 from vap.audio import load_waveform
@@ -203,15 +204,17 @@ class VAP_Model:
         channels = 2
         fs = 44100  # Record at 44100 samples per second
         seconds = 5
-        filename = "output.wav"
+        filename = "VAP.wav"
 
         length_queue = len(signal)
 
+        # return no signal if its shorter than 5 seconds
         if length_queue < 215:
             return None
 
         p = pyaudio.PyAudio()  # Create an interface to PortAudio
 
+        # take only the last 5 seconds (215 chunks) of the audio signal
         frames = signal[-215:]
 
         # Save the recorded data as a WAV file
@@ -293,8 +296,11 @@ class VAP_Model:
             ###########################################################
             # Save Output
             ###########################################################
-            OutputQueue.put(out["p_future"][-1])
-            logger.debug("Output: " + str(out["p_future"][0][-1]))
+            # logger.debug("Output: " + str(out["p_now"]))
+            # logger.debug("Output: " + str(out["p_now"][0][-1]))
+            OutputQueue.put(out["p_now"][0][-1])
+            
+            time.sleep(0.6)
 
             '''
             ###########################################################
