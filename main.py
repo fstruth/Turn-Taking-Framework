@@ -2,7 +2,6 @@ import multiprocessing
 from Audio_Video_Read.AUDIO_READ import StartAUDIO_READ, StopAUDIO_READ
 from Broker.AudioChunkBroker import StartAudioChunkBroker, StopAudioChunkBroker
 from VoiceActivityProjection.VAP_Model import StartVAP_Model, StopVAP_Model
-from Audio_Video_Read.VIDEO_READ import StartVIDEO_READ, StopVIDEO_READ
 from Headpose.HeadposeDetection import StartHeadposeDetection, StopHeadposeDetection
 from Processing.Processing import StartProcessing, StopProcessing
 from Prosodie.Prosodie import StartProsodie, StopProsodie
@@ -24,7 +23,6 @@ if __name__ == '__main__':
         AudioBrokerToVAP = manager.Queue()
         AudioBrokerToProsodie = manager.Queue()
         ListAudioBrokerQueues = [AudioBrokerToVAP, AudioBrokerToProsodie]
-        # VideoReadOutput = manager.Queue()
         HeadposeOutput = manager.Queue()
         VAPOutput = manager.Queue()
         ProsodieOutput = manager.Queue()
@@ -46,10 +44,6 @@ if __name__ == '__main__':
         # start Prosodie
         logger.debug("Start Prosodie")
         StartProsodie(InputQueue=AudioBrokerToProsodie, OutputQueue=ProsodieOutput)
-        
-        # start recording
-        # logger.debug("Start Video_READ")
-        # StartVIDEO_READ(videodevice="", OutputQueue=VideoReadOutput)
 
         # start processing of the video
         logger.debug("Start HeadposeDetection")
@@ -58,12 +52,12 @@ if __name__ == '__main__':
         # start Processing
         logger.debug("Start Processing")
         StartProcessing(ListProcessingQueues, ProcessingOutput)
-        
+
         # start Send to Skill
         logger.debug("Start sending to skill")
         StartSending(InputQueue=ProcessingOutput)
 
-        time.sleep(500)
+        time.sleep(500)  # This defines how long the system is active in seconds
 
         logger.debug("Stop sending to Skill")
         StopSending()
@@ -86,7 +80,4 @@ if __name__ == '__main__':
         logger.debug("Stop HeadposeDetection")
         StopHeadposeDetection()
 
-        # logger.debug("Stop VIDEO_READ")
-        # StopVIDEO_READ()
-        
         time.sleep(10)

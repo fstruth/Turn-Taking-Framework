@@ -25,18 +25,18 @@ class Prosodie:
         sample_format = pyaudio.paInt16  # 16 bits per sample
         channels = 2
         fs = 44100  # Record at 44100 samples per second
-        seconds = 5
+        seconds = 3
         filename = "Prosodie.wav"
 
         length_queue = len(signal)
 
-        # return no signal if its shorter than 5 seconds
+        # return no signal if its shorter than 3 seconds
         if length_queue < 129:
             return None
 
         p = pyaudio.PyAudio()  # Create an interface to PortAudio
 
-        # take only the last 5 seconds (215 chunks) of the audio signal
+        # take only the last 3 seconds (129 chunks) of the audio signal
         frames = signal[-129:]
 
         # Save the recorded data as a WAV file
